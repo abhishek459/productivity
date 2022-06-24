@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'To Do',
         theme: lightTheme(),
-        darkTheme: darkTheme(),
+        // darkTheme: darkTheme(),
         themeMode: ThemeMode.system,
         home: const HomeScreen(),
       ),
