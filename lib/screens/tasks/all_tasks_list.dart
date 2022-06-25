@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../models/task_model.dart';
 import '../../providers/task_provider.dart';
 import '../../utils/date_methods.dart';
-import '../../widgets/custom_scaffold.dart';
 
 class AllTasksList extends StatefulWidget {
   const AllTasksList({Key? key}) : super(key: key);
@@ -16,8 +15,10 @@ class AllTasksList extends StatefulWidget {
 class _AllTasksListState extends State<AllTasksList> {
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(
-      appBarTitle: 'Summary',
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Summary'),
+      ),
       body: FutureBuilder(
         future: Provider.of<TaskProvider>(context, listen: false)
             .fetchAndSetTasks(),

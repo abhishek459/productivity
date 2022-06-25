@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:productivity/widgets/notosans_text.dart';
 
 import './deadline_setter.dart';
 import '../services/task_input_methods.dart';
@@ -19,6 +20,13 @@ class _TaskInputFormState extends State<TaskInputForm> {
 
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  bool showDateSelecter = false;
+
+  void toggleDeadlineSetter() {
+    setState(() {
+      showDateSelecter = !showDateSelecter;
+    });
+  }
 
   @override
   void dispose() {
@@ -48,29 +56,34 @@ class _TaskInputFormState extends State<TaskInputForm> {
             controller: _taskController,
           ),
           verticalPadding,
-          verticalPadding,
-          DeadlineSetter(
-              dateController: _dateController, timeController: _timeController),
-          verticalPadding,
-          Align(
-            alignment: Alignment.center,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(40, 40),
-                shape: const CircleBorder(),
+          (showDateSelecter)
+              ? DeadlineSetter(
+                  dateController: _dateController,
+                  timeController: _timeController,
+                )
+              : const SizedBox(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: Icon(Icons.calendar_today,
+                    color: (showDateSelecter) ? Colors.blue : null),
+                onPressed: toggleDeadlineSetter,
               ),
-              onPressed: () => {
-                TaskMethods.addTask(
-                  context: context,
-                  title: _taskController.text,
-                  deadline: (getDeadline() == null)
-                      ? null
-                      : DateTime.parse(getDeadline()!),
-                ),
-                finishingUp(),
-              },
-              child: const Icon(Icons.check),
-            ),
+              TextButton(
+                onPressed: () => {
+                  TaskMethods.addTask(
+                    context: context,
+                    title: _taskController.text,
+                    deadline: (getDeadline() == null)
+                        ? null
+                        : DateTime.parse(getDeadline()!),
+                  ),
+                  finishingUp(),
+                },
+                child: const NotoSansText(text: 'Save', fontSize: 18),
+              ),
+            ],
           ),
         ],
       ),

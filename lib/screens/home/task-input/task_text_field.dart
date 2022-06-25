@@ -13,6 +13,7 @@ class TaskInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      autofocus: true,
       decoration: InputDecoration(
         hintText: hintText,
         counterText: "",

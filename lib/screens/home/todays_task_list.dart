@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:productivity/screens/home/task_layout.dart';
+import 'package:productivity/widgets/notosans_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/task_model.dart';
@@ -33,14 +34,17 @@ class _TodaysTasksListState extends State<TodaysTasksList> {
               ),
             );
           } else {
-            return ListView.builder(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              itemCount: listOfTasks.length,
-              itemBuilder: (context, index) => ChangeNotifierProvider.value(
-                key: ValueKey(listOfTasks[index].timeStamp.toIso8601String()),
-                value: listOfTasks[index],
-                child: const TaskItem(),
+            return Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                itemCount: listOfTasks.length,
+                itemBuilder: (context, index) => ChangeNotifierProvider.value(
+                  key: ValueKey(listOfTasks[index].timeStamp.toIso8601String()),
+                  value: listOfTasks[index],
+                  child: const TaskItem(),
+                ),
               ),
             );
           }
@@ -60,17 +64,17 @@ class TaskItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final taskItem = Provider.of<TaskModel>(context, listen: false);
-    return Card(
-      child: ListTile(
-        title: Consumer<TaskModel>(
-          builder: (context, value, _) => TaskTitle(taskItem: taskItem),
-        ),
-        subtitle: Text(
-          DateMethods.dateFormatter(taskItem.timeStamp),
-        ),
-        trailing: Consumer<TaskModel>(
-            builder: (context, value, child) =>
-                TrailingIcon(taskItem: taskItem)),
+    return TaskLayout(
+      leadingIcon: Consumer<TaskModel>(
+        builder: (context, value, child) => LeadingIcon(taskItem: taskItem),
+        child: LeadingIcon(taskItem: taskItem),
+      ),
+      taskStatus: taskItem.isCompleted,
+      taskTitle: Consumer<TaskModel>(
+        builder: (context, value, _) => TaskTitle(taskItem: taskItem),
+      ),
+      taskSubtitle: Text(
+        DateMethods.dateFormatter(taskItem.timeStamp),
       ),
     );
   }
@@ -83,80 +87,44 @@ class TaskTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!taskItem.isCompleted) {
-      return Text(
-        taskItem.taskTitle,
-        overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.notoSans(
-          fontSize: 20,
-        ),
+      return NotoSansText(
+        text: taskItem.taskTitle,
+        overflow: true,
+        fontSize: 20,
       );
     } else {
-      return Text(
-        taskItem.taskTitle,
-        overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.notoSans(
-          fontSize: 20,
-          decoration: TextDecoration.lineThrough,
-          fontWeight: FontWeight.w300,
-        ),
+      return NotoSansText(
+        text: taskItem.taskTitle,
+        overflow: true,
+        fontSize: 20,
+        lineThrough: true,
+        lightFont: true,
       );
     }
   }
 }
 
-class TrailingIcon extends StatelessWidget {
+class LeadingIcon extends StatelessWidget {
   final TaskModel taskItem;
-  const TrailingIcon({Key? key, required this.taskItem}) : super(key: key);
+  const LeadingIcon({Key? key, required this.taskItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final Image taskCompleteIcon = Image.asset('lib/assets/icons/check.png');
     if (taskItem.isCompleted) {
       return SizedBox(
-        height: 40,
+        height: 35,
         child: taskCompleteIcon,
       );
     } else {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Card(
-            color: Colors.white,
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () => TaskMethods.markTaskAsComplete(context, taskItem),
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.green,
-                  size: 35,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Card(
-            color: Colors.white,
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () => TaskMethods.deleteTask(
-                    context, taskItem.timeStamp.toIso8601String()),
-                child: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                  size: 35,
-                ),
-              ),
-            ),
-          ),
-        ],
+      return InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => TaskMethods.markTaskAsComplete(context, taskItem),
+        child: const Icon(
+          Icons.circle_outlined,
+          color: Colors.green,
+          size: 35,
+        ),
       );
     }
   }

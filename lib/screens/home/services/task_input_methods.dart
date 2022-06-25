@@ -25,6 +25,7 @@ class TaskMethods {
     taskItem.markTaskAsComplete();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        duration: const Duration(seconds: 2),
         content: Text(cheerMeUp[Random().nextInt(cheerMeUp.length)]),
       ),
     );

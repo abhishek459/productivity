@@ -34,9 +34,11 @@ class _DeadlineSetterState extends State<DeadlineSetter> {
   }
 
   void pickTime() async {
+    final int hour = DateTime.now().hour + 1;
+    final int minute = DateTime.now().minute;
     await showTimePicker(
       context: context,
-      initialTime: selectedTime ?? const TimeOfDay(hour: 00, minute: 00),
+      initialTime: selectedTime ?? TimeOfDay(hour: hour, minute: minute),
     ).then((value) {
       if (value != null) {
         setState(() {
