@@ -3,14 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 ThemeData lightTheme() {
   const Color foregroundColor = Color.fromRGBO(24, 31, 28, 1);
-  const Color backgroundColor = Color.fromRGBO(251, 249, 255, 1);
+  const Color backgroundColor = Color.fromRGBO(242, 245, 252, 1);
   return ThemeData(
     pageTransitionsTheme: const PageTransitionsTheme(builders: {
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
     }),
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      backgroundColor: Color.fromRGBO(123, 75, 148, 1),
     ),
     scaffoldBackgroundColor: backgroundColor,
     inputDecorationTheme: InputDecorationTheme(
@@ -28,7 +27,7 @@ ThemeData lightTheme() {
       suffixIconColor: foregroundColor,
     ),
     splashColor: backgroundColor,
-    hintColor: foregroundColor,
+    hintColor: const Color.fromRGBO(80, 130, 252, 1),
     textTheme: TextTheme(
       displayMedium: GoogleFonts.notoSans(
         color: foregroundColor,

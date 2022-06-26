@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:productivity/utils/date_methods.dart';
+import 'package:productivity/widgets/notosans_text.dart';
 
 class TaskLayout extends StatelessWidget {
   final bool taskStatus;
   final Widget taskTitle;
-  final Text taskSubtitle;
+  final DateTime taskSubtitle;
   final Widget leadingIcon;
   const TaskLayout({
     Key? key,
@@ -33,9 +35,9 @@ class TaskLayout extends StatelessWidget {
               children: [
                 taskTitle,
                 const SizedBox(height: 5),
-                Text(
-                  'Task Time',
-                  style: TextStyle(color: Colors.black.withOpacity(0.5)),
+                NotoSansText(
+                  text: DateMethods.dateFormatter(taskSubtitle),
+                  lightFont: true,
                 ),
               ],
             ),

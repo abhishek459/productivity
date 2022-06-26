@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../models/task_model.dart';
 import '../../providers/task_provider.dart';
-import '../../utils/date_methods.dart';
 import './services/task_input_methods.dart';
 
 class TodaysTasksList extends StatefulWidget {
@@ -73,9 +72,7 @@ class TaskItem extends StatelessWidget {
       taskTitle: Consumer<TaskModel>(
         builder: (context, value, _) => TaskTitle(taskItem: taskItem),
       ),
-      taskSubtitle: Text(
-        DateMethods.dateFormatter(taskItem.timeStamp),
-      ),
+      taskSubtitle: taskItem.timeStamp,
     );
   }
 }
