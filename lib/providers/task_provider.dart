@@ -9,8 +9,6 @@ class TaskProvider with ChangeNotifier {
 
   List<TaskModel> get getTasks => _tasks;
   List<TaskModel> get getAllTasks => _allTasks;
-  int get completedTasks =>
-      _tasks.where((element) => element.isCompleted == true).length;
 
   Future<void> fetchAndSetTodaysTasks() async {
     final List<Map<String, Object?>> dataList =

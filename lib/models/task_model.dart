@@ -34,6 +34,8 @@ class TaskModel with ChangeNotifier {
     completedOn = DateTime.now();
     notifyListeners();
     DBHelper.markTaskAsComplete(
-        timeStamp.toIso8601String(), completedOn!.toIso8601String());
+      timeStamp.toIso8601String(),
+      completedOn!.toIso8601String(),
+    );
   }
 }

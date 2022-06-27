@@ -119,7 +119,7 @@ class LeadingIcon extends StatelessWidget {
         onTap: () => TaskMethods.markTaskAsComplete(context, taskItem),
         child: const Icon(
           Icons.circle_outlined,
-          color: Colors.green,
+          color: Color.fromRGBO(80, 130, 252, 0.8),
           size: 35,
         ),
       );

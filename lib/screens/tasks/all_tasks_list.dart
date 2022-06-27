@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:productivity/widgets/main_drawer.dart';
+import 'package:productivity/widgets/my_appbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/task_model.dart';
@@ -16,9 +18,15 @@ class _AllTasksListState extends State<AllTasksList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Summary'),
+      appBar: PreferredSize(
+        preferredSize:
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
+        child: const MyAppBar(
+          appBarTitle: 'Summary',
+        ),
       ),
+      extendBodyBehindAppBar: true,
+      drawer: const MainDrawer(),
       body: FutureBuilder(
         future: Provider.of<TaskProvider>(context, listen: false)
             .fetchAndSetTasks(),
