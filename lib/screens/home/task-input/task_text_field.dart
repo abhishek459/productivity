@@ -4,10 +4,12 @@ import 'package:flutter/services.dart';
 class TaskInputField extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
+  final Function()? onEditingComplete;
   const TaskInputField({
     Key? key,
     required this.controller,
     required this.hintText,
+    this.onEditingComplete,
   }) : super(key: key);
 
   @override
@@ -24,6 +26,7 @@ class TaskInputField extends StatelessWidget {
         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 !,.]'))
       ],
       textInputAction: TextInputAction.done,
+      onEditingComplete: onEditingComplete,
       textCapitalization: TextCapitalization.sentences,
       controller: controller,
       maxLength: 100,

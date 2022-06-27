@@ -57,13 +57,11 @@ class _DeadlineSetterState extends State<DeadlineSetter> {
       children: [
         TimeInputField(
           controller: widget.dateController,
-          icon: Icons.calendar_month_outlined,
           hintText: 'Pick Date',
           onTap: pickDate,
         ),
         TimeInputField(
           controller: widget.timeController,
-          icon: Icons.timer,
           hintText: 'Pick Time',
           onTap: pickTime,
         ),
@@ -74,13 +72,11 @@ class _DeadlineSetterState extends State<DeadlineSetter> {
 
 class TimeInputField extends StatelessWidget {
   final String hintText;
-  final IconData icon;
   final TextEditingController controller;
   final void Function()? onTap;
   const TimeInputField({
     Key? key,
     required this.hintText,
-    required this.icon,
     required this.controller,
     this.onTap,
   }) : super(key: key);
@@ -93,8 +89,6 @@ class TimeInputField extends StatelessWidget {
         style: Theme.of(context).textTheme.displayMedium,
         controller: controller,
         decoration: InputDecoration(
-          suffixIcon: Icon(icon),
-          suffixIconColor: Theme.of(context).hintColor,
           hintText: hintText,
           filled: true,
         ),

@@ -13,19 +13,52 @@ class TaskInputForm extends StatefulWidget {
   State<TaskInputForm> createState() => _TaskInputFormState();
 }
 
-class _TaskInputFormState extends State<TaskInputForm> {
+class _TaskInputFormState extends State<TaskInputForm>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation _animation;
+
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
 
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-  bool showDateSelecter = false;
+  bool showingDeadlineSetter = false;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = Tween<Size>(
+      begin: const Size(0, 0),
+      end: const Size(
+        double.infinity,
+        80,
+      ),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    _animation.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
 
   void toggleDeadlineSetter() {
-    setState(() {
-      showDateSelecter = !showDateSelecter;
-    });
+    if (!showingDeadlineSetter) {
+      _controller.forward();
+      showingDeadlineSetter = true;
+    } else {
+      _controller.reverse();
+      showingDeadlineSetter = false;
+    }
   }
 
   @override
@@ -33,6 +66,7 @@ class _TaskInputFormState extends State<TaskInputForm> {
     _taskController.dispose();
     _dateController.dispose();
     _timeController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -54,33 +88,26 @@ class _TaskInputFormState extends State<TaskInputForm> {
           TaskInputField(
             hintText: 'New task',
             controller: _taskController,
+            onEditingComplete: addTask,
           ),
           verticalPadding,
-          (showDateSelecter)
-              ? DeadlineSetter(
-                  dateController: _dateController,
-                  timeController: _timeController,
-                )
-              : const SizedBox(),
+          SizedBox(
+            height: _animation.value.height,
+            child: DeadlineSetter(
+              dateController: _dateController,
+              timeController: _timeController,
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 icon: Icon(Icons.calendar_today,
-                    color: (showDateSelecter) ? Colors.blue : null),
+                    color: (showingDeadlineSetter) ? Colors.blue : null),
                 onPressed: toggleDeadlineSetter,
               ),
               TextButton(
-                onPressed: () => {
-                  TaskMethods.addTask(
-                    context: context,
-                    title: _taskController.text,
-                    deadline: (getDeadline() == null)
-                        ? null
-                        : DateTime.parse(getDeadline()!),
-                  ),
-                  finishingUp(),
-                },
+                onPressed: addTask,
                 child: const NotoSansText(text: 'Save', fontSize: 18),
               ),
             ],
@@ -88,6 +115,15 @@ class _TaskInputFormState extends State<TaskInputForm> {
         ],
       ),
     );
+  }
+
+  void addTask() {
+    TaskMethods.addTask(
+      context: context,
+      title: _taskController.text,
+      deadline: (getDeadline() == null) ? null : DateTime.parse(getDeadline()!),
+    );
+    finishingUp();
   }
 
   void finishingUp() {
