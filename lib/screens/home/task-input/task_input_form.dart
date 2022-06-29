@@ -15,50 +15,51 @@ class TaskInputForm extends StatefulWidget {
 
 class _TaskInputFormState extends State<TaskInputForm>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation _animation;
-
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
 
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool showingDeadlineSetter = false;
 
+  void toggleDeadlineSetter() {
+    // setState(() {
+    //   showingDeadlineSetter = !showingDeadlineSetter;
+    // });
+    if (showingDeadlineSetter) {
+      setState(() {
+        showingDeadlineSetter = false;
+      });
+      _dateController.clear();
+      _timeController.clear();
+      _animationController.reverse();
+    } else {
+      setState(() {
+        showingDeadlineSetter = true;
+      });
+      _animationController.forward();
+    }
+  }
+
   @override
   void initState() {
-    _controller = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _animation = Tween<Size>(
-      begin: const Size(0, 0),
-      end: const Size(
-        double.infinity,
-        80,
-      ),
-    ).animate(
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 1), end: const Offset(0, 0))
+            .animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _animationController,
         curve: Curves.easeIn,
       ),
     );
-
-    _animation.addListener(() {
-      setState(() {});
-    });
     super.initState();
-  }
-
-  void toggleDeadlineSetter() {
-    if (!showingDeadlineSetter) {
-      _controller.forward();
-      showingDeadlineSetter = true;
-    } else {
-      _controller.reverse();
-      showingDeadlineSetter = false;
-    }
   }
 
   @override
@@ -66,13 +67,12 @@ class _TaskInputFormState extends State<TaskInputForm>
     _taskController.dispose();
     _dateController.dispose();
     _timeController.dispose();
-    _controller.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const Widget verticalPadding = VerticalPadding();
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.only(
@@ -81,38 +81,44 @@ class _TaskInputFormState extends State<TaskInputForm>
         top: 20,
         bottom: 20 + MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TaskInputField(
-            hintText: 'New task',
-            controller: _taskController,
-            onEditingComplete: addTask,
-          ),
-          verticalPadding,
-          SizedBox(
-            height: _animation.value.height,
-            child: DeadlineSetter(
-              dateController: _dateController,
-              timeController: _timeController,
+      child: AnimatedSize(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TaskInputField(
+              hintText: 'New task',
+              controller: _taskController,
+              onEditingComplete: addTask,
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.calendar_today,
-                    color: (showingDeadlineSetter) ? Colors.blue : null),
-                onPressed: toggleDeadlineSetter,
+            SizedBox(height: showingDeadlineSetter ? 20 : 10),
+            if (showingDeadlineSetter)
+              SlideTransition(
+                position: _slideAnimation,
+                child: DeadlineSetter(
+                  dateController: _dateController,
+                  timeController: _timeController,
+                ),
               ),
-              TextButton(
-                onPressed: addTask,
-                child: const NotoSansText(text: 'Save', fontSize: 18),
-              ),
-            ],
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.calendar_today,
+                      color: (showingDeadlineSetter) ? Colors.blue : null),
+                  onPressed: toggleDeadlineSetter,
+                ),
+                TextButton(
+                  onPressed: addTask,
+                  child: const NotoSansText(text: 'Save', fontSize: 18),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -127,7 +133,6 @@ class _TaskInputFormState extends State<TaskInputForm>
   }
 
   void finishingUp() {
-    getDeadline();
     FocusScope.of(context).unfocus();
     Navigator.of(context).pop();
   }
@@ -152,14 +157,5 @@ class _TaskInputFormState extends State<TaskInputForm>
     } else {
       return null;
     }
-  }
-}
-
-class VerticalPadding extends StatelessWidget {
-  const VerticalPadding({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(height: 10);
   }
 }

@@ -17,7 +17,7 @@ ThemeData lightTheme() {
       hintStyle: const TextStyle(color: foregroundColor),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: foregroundColor, width: 1.5),
+        borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
