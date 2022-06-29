@@ -27,9 +27,6 @@ class _TaskInputFormState extends State<TaskInputForm>
   bool showingDeadlineSetter = false;
 
   void toggleDeadlineSetter() {
-    // setState(() {
-    //   showingDeadlineSetter = !showingDeadlineSetter;
-    // });
     if (showingDeadlineSetter) {
       setState(() {
         showingDeadlineSetter = false;
@@ -49,10 +46,10 @@ class _TaskInputFormState extends State<TaskInputForm>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 150),
     );
     _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 1), end: const Offset(0, 0))
+        Tween<Offset>(begin: const Offset(0, 1.5), end: const Offset(0, 0))
             .animate(
       CurvedAnimation(
         parent: _animationController,
@@ -83,7 +80,7 @@ class _TaskInputFormState extends State<TaskInputForm>
       ),
       child: AnimatedSize(
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 100),
         curve: Curves.easeIn,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
